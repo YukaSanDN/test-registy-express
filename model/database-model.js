@@ -1,4 +1,4 @@
-'use strick';
+'use strict';
 
 const Sequelize = require('sequelize');
 const connection = require('../routes/connection');
@@ -26,8 +26,7 @@ const authorizUserInfo = connection.define('authorizUserInfo',{
     });
 
 const userProfile = connection.define('userProfile',{
-
-    profileId:{
+        profileId:{
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
@@ -104,10 +103,11 @@ const contactType = connection.define('contactType',{
         updatedAt: 'updated'
     });
 
+
 const userContact = connection.define('userContact',{
     contactId:{
         allowNull: false,
-        autoIncrement: true,
+
         type: Sequelize.DataTypes.INTEGER
     },
     profileId:{
@@ -128,11 +128,11 @@ const userContact = connection.define('userContact',{
         updatedAt: 'updated'
     });
 
-authorizUserInfo.sync({force: true});
+/*authorizUserInfo.sync({force: true});
 userProfile.sync({force: true});
 userImage.sync({force: true});
 contactType.sync({force: true});
-userContact.sync({force: true});
+userContact.sync({force: true});*/
 
 userProfile.belongsToMany(contactType,{through: userContact, foreignKey: 'profileId'});
 contactType.belongsToMany(userProfile,{through: userContact, foreignKey: 'typeId'});
@@ -140,8 +140,10 @@ contactType.belongsToMany(userProfile,{through: userContact, foreignKey: 'typeId
 userImage.belongsTo(userProfile , { foreignKey: 'profileId' });
 userProfile.belongsTo(authorizUserInfo , { foreignKey: 'userId' });
 
+module.exports.authorizUserInfo = authorizUserInfo;
+
 module.exports.userContact = userContact;
 module.exports.contactType = contactType;
 module.exports.userImage = userImage;
-module.exports.authorizUserInfo = authorizUserInfo;
+
 module.exports.userProfile = userProfile;

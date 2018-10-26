@@ -2,12 +2,11 @@
 
 const Sequelize = require('sequelize');
 
-const connection = new Sequelize('user_profile', 'Admin', 'Admin', {
+const connection = new Sequelize('userprofile', 'profileAdmin', 'Admin', {
     host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
 });
-
 connection.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
@@ -17,4 +16,5 @@ connection.authenticate()
     });
 
 module.exports = connection;
+
 
