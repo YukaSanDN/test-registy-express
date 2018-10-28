@@ -1,29 +1,119 @@
 'use strict';
 
 const authorization = require('../model/database-model').authorizUserInfo;
-const registry = require('../model/database-model').userProfile;
+const profile = require('../model/database-model').userProfile;
 const userContact = require('../model/database-model').userContact;
 const contactType = require('../model/database-model').contactType;
+const imageUser = require('../model/database-model').userImage;
+const bcrypt = require('bcrypt');
 
+const FormData = require ( 'form-data' ) ;
+const  fs  = require ( 'fs' ) ;
 
-const Respone = require('../model/ResponseModel');
-const fs = require('fs-extra');
+const Response = require('../model/ResponseModel');
+//const fs = require('fs-extra');
 
 module.exports.Registry = async (req, res)=> {
 
-   let respone = new Respone();
+    let response = new Response();// создаем объект ответа сервера
+   try {
+        let loginVerification = await authorization.findOne({
+            where:{
+                userLogin:req.body.login
+            }
+        });
 
-   let login = req.body.login;
-   let name = req.body.name;
-   let lastName = req.body.lastName;
-   let email = req.body.email;
-   let birthday= req.body.birthday;
-   let phone = req.body.phone;
+        let emailVerification = await userContact.findOne({
+            where:{
+                contactValue:req.body.email
+            }
+        });
+        console.log();
 
-      console.log(req.body);
+        if(loginVerification==null){
+            if(emailVerification==null){
+                if(
+                    req.body.login&&
+                    req.body.password&&
+                    req.body.name&&
+                    req.body.lastName&&
+                    req.body.email&&
+                    req.body.birthday&&
+                    req.body.phone
+                ){
 
-   respone.code = 200;
-   respone.message = 'регистрация успешна';
-   res.send(respone);
+                    let number = Math.floor(Math.random() * (9 - 5+1) ) + 5 //генерируем случайное число символов от 5 до 9
+                    let saltStr = bcrypt.genSaltSync(number);// создаем соль
+                    let hexPassword = bcrypt.hashSync(req.body.password, saltStr); // получаем закодированный пароль
+
+                    let newAuth = await authorization.create({
+                        'userLogin':req.body.login,
+                        'userPassword': hexPassword,
+                        'salt':saltStr
+                    });
+
+                    let newProfile = await profile.create({
+
+                        'userId': newAuth.userId,
+                        'userName': req.body.name,
+                        'userLastname': req.body.lastName,
+                        'userBirthday':req.body.birthday
+
+                    });
+
+                    let Type = await contactType.findAll();
+
+                       for(let i =0;i<Type.length;i++){
+
+                            if(req.body[Type[i].typeTitle] != undefined ){
+                                let uContact = await userContact.create({
+
+                                    'profileId':newProfile.profileId,
+                                    'typeId': Type[i].typeId,
+                                    'contactValue': req.body[Type[i].typeTitle]
+                                })
+                            }//if
+                       }//for пере
+                    // бираем значения имеющихся типов контактов в БД, проверяем наличие такого типа в в запросе и добавляем в БД если значение верно
+
+                    response.code = 200;
+                    response.message = 'регистрация успешна';
+                }//if
+                else{
+                    response.code = 401;
+                    response.message = 'переданны некоректные данные';
+                }//else
+
+            }//if loginVerification
+            else{
+                response.code = 402;
+                response.message = 'пользователь с таким email уже сушествует';
+            }//else loginVerification //  проверяем login  на наличие в БД если есть отправляем ответ "пользователь с таким логином уже есть"
+
+        }//if emailVerification
+       else {
+            response.code = 402;
+            response.message = 'пользователь с таким логином  уже сушествует';
+        }//else emailVerification //проверяем email  на наличие в БД если есть отправляем ответ "пользователь с таким email уже есть"
+
+
+   }catch (ex){
+
+       response.code = 500;
+       response.message = 'ощибка сервера';
+       response.data = null;
+   }
+    res.send(response);
 
 };
+
+module.exports.AddImageUser = async (req, res)=>{
+
+
+
+    if(req.files.length!==0){
+
+    }
+
+
+}

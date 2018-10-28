@@ -13,7 +13,8 @@ const modelDB = require('./model/database-model');
 
 // router API
 const registryRouter = require('./routes/api/registyRouter');
-
+const authRouter = require('./routes/api/authRouter');
+const userRouter = require('./routes/api/userRouter');
 const app = express();
 
 app.use(fileUpload());
@@ -25,7 +26,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/api',registryRouter );
-
+app.use('/api',authRouter);
+app.use('/api',userRouter);
 
 
 

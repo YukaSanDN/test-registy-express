@@ -18,6 +18,10 @@ const authorizUserInfo = connection.define('authorizUserInfo',{
     userPassword:{
         allowNull: false,
         type: Sequelize.DataTypes.STRING,
+    },
+    salt:{
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
     }
     },
     {
@@ -25,8 +29,20 @@ const authorizUserInfo = connection.define('authorizUserInfo',{
         updatedAt: 'updated'
     });
 
+const userToken = connection.define('userToken',{
+
+    userId:{
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER
+    },
+    userToken:{
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
+    }
+});
+
 const userProfile = connection.define('userProfile',{
-        profileId:{
+    profileId:{
         primaryKey: true,
         allowNull: false,
         autoIncrement: true,
@@ -35,11 +51,6 @@ const userProfile = connection.define('userProfile',{
     userId:{
         allowNull: false,
         type: Sequelize.DataTypes.INTEGER
-    },
-    userLogin:{
-        allowNull: false,
-        unique: true,
-        type: Sequelize.DataTypes.STRING,
     },
     userName:{
         allowNull: false,
@@ -105,11 +116,7 @@ const contactType = connection.define('contactType',{
 
 
 const userContact = connection.define('userContact',{
-    contactId:{
-        allowNull: false,
 
-        type: Sequelize.DataTypes.INTEGER
-    },
     profileId:{
         allowNull: false,
         type: Sequelize.DataTypes.INTEGER
@@ -118,6 +125,7 @@ const userContact = connection.define('userContact',{
         allowNull: false,
         type: Sequelize.DataTypes.INTEGER
     },
+
     contactValue:{
         allowNull: false,
         type: Sequelize.DataTypes.STRING,
@@ -127,23 +135,23 @@ const userContact = connection.define('userContact',{
         createdAt: 'created',
         updatedAt: 'updated'
     });
-
 /*authorizUserInfo.sync({force: true});
 userProfile.sync({force: true});
 userImage.sync({force: true});
 contactType.sync({force: true});
-userContact.sync({force: true});*/
+userContact.sync({force: true});
+userToken.sync({force: true});*/
 
 userProfile.belongsToMany(contactType,{through: userContact, foreignKey: 'profileId'});
 contactType.belongsToMany(userProfile,{through: userContact, foreignKey: 'typeId'});
 
 userImage.belongsTo(userProfile , { foreignKey: 'profileId' });
 userProfile.belongsTo(authorizUserInfo , { foreignKey: 'userId' });
+userToken.belongsTo(authorizUserInfo , { foreignKey: 'userId' });
 
 module.exports.authorizUserInfo = authorizUserInfo;
-
 module.exports.userContact = userContact;
 module.exports.contactType = contactType;
 module.exports.userImage = userImage;
-
 module.exports.userProfile = userProfile;
+module.exports.userTokenInfo = userToken;
