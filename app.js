@@ -29,8 +29,6 @@ app.use('/api',registryRouter );
 app.use('/api',authRouter);
 app.use('/api',userRouter);
 
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   let error = createError(404)

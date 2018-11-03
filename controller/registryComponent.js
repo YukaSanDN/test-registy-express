@@ -1,5 +1,5 @@
 'use strict';
-
+const Validator = require('validatorjs');
 const authorization = require('../model/database-model').authorizUserInfo;
 const profile = require('../model/database-model').userProfile;
 const userContact = require('../model/database-model').userContact;
@@ -16,6 +16,15 @@ const Response = require('../model/ResponseModel');
 module.exports.Registry = async (req, res)=> {
 
     let response = new Response();// создаем объект ответа сервера
+/*
+    Validator.register('name',(value, requirement, attribute)=>{
+        return value.match(/^[a-z а-я]{2,25}$/i);
+    },false);
+
+
+    let validName = Validator.name( req.body.name);*/
+
+    console.log('запрос',req.body);
    try {
         let loginVerification = await authorization.findOne({
             where:{

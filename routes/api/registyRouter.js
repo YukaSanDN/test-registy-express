@@ -6,6 +6,6 @@ const router = express.Router();
 
 const RegistryComponent = require('../../controller/registryComponent');
 
-router.post('/registy',RegistryComponent.Registry );
+router.post('/registry',RegistryComponent.Registry );
 
 module.exports = router;

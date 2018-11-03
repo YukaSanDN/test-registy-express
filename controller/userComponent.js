@@ -24,7 +24,7 @@ module.exports.GetUser=async (req,res)=>{
                 }
             });
             if(checkToken){
-                console.log('start');
+
                 let data = new formData();
 
                 let userLogin = await authorization.findOne({
