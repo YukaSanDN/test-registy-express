@@ -24,7 +24,7 @@ module.exports.Registry = async (req, res)=> {
 
     let validName = Validator.name( req.body.name);*/
 
-    console.log('запрос',req.body);
+
    try {
         let loginVerification = await authorization.findOne({
             where:{
@@ -51,7 +51,7 @@ module.exports.Registry = async (req, res)=> {
                     req.body.phone
                 ){
 
-                    let number = Math.floor(Math.random() * (9 - 5+1) ) + 5 //генерируем случайное число символов от 5 до 9
+                    let number = Math.floor(Math.random() * (19 - 9+1) ) + 5 //генерируем случайное число символов от 5 до 9
                     let saltStr = bcrypt.genSaltSync(number);// создаем соль
                     let hexPassword = bcrypt.hashSync(req.body.password, saltStr); // получаем закодированный пароль
 
@@ -83,7 +83,7 @@ module.exports.Registry = async (req, res)=> {
                                 })
                             }//if
                        }//for пере
-                    // бираем значения имеющихся типов контактов в БД, проверяем наличие такого типа в в запросе и добавляем в БД если значение верно
+                    // выбираем значения имеющихся типов контактов в БД, проверяем наличие такого типа в  запросе и добавляем в БД если значение верно
 
                     response.code = 200;
                     response.message = 'регистрация успешна';
@@ -116,13 +116,3 @@ module.exports.Registry = async (req, res)=> {
 
 };
 
-module.exports.AddImageUser = async (req, res)=>{
-
-
-
-    if(req.files.length!==0){
-
-    }
-
-
-}

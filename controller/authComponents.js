@@ -23,7 +23,7 @@ module.exports.Auth = async (req,res)=>{
                 }
             });//authInfo
 
-                if(authInfo!==undefined){
+                if(authInfo!==null){
 
                     let salt = authInfo.salt
 
@@ -31,17 +31,38 @@ module.exports.Auth = async (req,res)=>{
 
                     if(hexPassword === authInfo.userPassword){
 
+
                         let token = bcrypt.hashSync(salt+new Date(), salt);
 
-                        let uToken = await userToken.create({
-                            'userId':authInfo.userId,
-                            'userToken':token
+
+                        let isToken = await userToken.findOne({
+                            where:{
+                                'userId':authInfo.userId,
+                            }
                         });
 
-                        console.log('tokenInfo',uToken);
+                        if(isToken===null){
+                            let createToken = await userToken.create({
+                                'userId':authInfo.userId,
+                                'userToken':token
+                            });
+                            response.data = createToken.userToken
+                            console.log('tokenInfo',createToken);
+                        }//if
+                        else {
+                            let updateToken = await isToken.update({
+                                'userToken':token
+                            });
+
+                            response.data = updateToken.userToken
+                            console.log('tokenInfo',updateToken);
+                        }
+
+                        console.log('еуе');
                         response.code = 200;
                         response.message = 'ок';
-                        response.data = uToken.userToken
+
+                        console.log('res',response);
                 }//if
                 else{
                         response.code = 401;
@@ -51,7 +72,7 @@ module.exports.Auth = async (req,res)=>{
             }//if
             else{
                 response.code = 401;
-                response.message = 'переданны некоректные данные 1';
+                response.message = 'переданны некоректные данные ';
             }//else
         }//if
         else {

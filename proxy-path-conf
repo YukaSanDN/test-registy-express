@@ -1,0 +1,8 @@
+http://madhukaudantha.blogspot.com/2012/08/apache-modproxy-for-windows.html
+
+
+ProxyPass        /registry-test  http://localhost:7000/test-registry/ retry=0
+ProxyPassReverse /registry-test  http://localhost:7000/test-registry/
+
+ProxyPass        /registry-test/api  http://localhost:3000/api retry=0
+ProxyPassReverse /registry-test/api  http://localhost:3000/api
